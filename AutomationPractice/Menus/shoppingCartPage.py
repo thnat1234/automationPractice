@@ -1,0 +1,11 @@
+class shoppingCartPage:
+    txt_page_heading_xpath = "//h1[contains(@class,'page-heading')]"
+    txt_current_step = "//li[contains(@class,'step_current')]"
+    txt_product_description = "//table[@id='cart_summary']//p[contains(@class,'product-name')]"
+    txt_product_availability = "//table[@id='cart_summary']//td[contains(@class,'cart_avail')]"
+    txt_product_price = "//table[@id='cart_summary']//li[contains(@class,'price')]"
+    component_product_qty = "//table[@id='cart_summary']//td[contains(@class,'cart_quantity')]"
+    txt_product_total_price = "//table[@id='cart_summary']//span[contains(@class,'price')]"
+    txt_total_products_price = "total_product"
+    txt_total_shipping_price = "total_shipping"
+    txt_total_cart_price = "total_price"
