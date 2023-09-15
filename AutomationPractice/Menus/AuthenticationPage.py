@@ -1,14 +1,8 @@
-from selenium import webdriver
 from AutomationPractice.Menus.headerPage import HeaderPage
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.action_chains import ActionChains
-import time
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.select import Select
 from datetime import datetime
-from selenium.common.exceptions import TimeoutException
 
 
 class AuthenticationPage:
@@ -35,7 +29,9 @@ class AuthenticationPage:
     rb_title_mr = "id_gender1"
     rb_title_mrs = "id_gender2"
     input_customer_first_name = "customer_firstname"
+    input_my_personal_first_name = "firstname"
     input_customer_last_name = "customer_lastname"
+    input_my_personal_last_name = "lastname"
     input_customer_email = "email"
     input_customer_password = "passwd"
     select_day = "days"
@@ -117,18 +113,12 @@ class AuthenticationPage:
 
     def clickOnMyPersonalInformation(self):
         self.driver.find_element(By.XPATH, self.link_my_personal_information).click()
-        WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, self.page_subheading)))
 
     def getFirstName(self):
-        return self.driver.find_element(By.ID, self.input_customer_first_name).text.strip()
+        return self.driver.find_element(By.ID, self.input_my_personal_first_name).get_attribute('value').strip()
 
     def getLastName(self):
-        return self.driver.find_element(By.ID, self.input_customer_last_name).text.strip()
+        return self.driver.find_element(By.ID, self.input_my_personal_last_name).get_attribute('value').strip()
 
     def getCustomerEmail(self):
-        return self.driver.find_element(By.ID, self.input_customer_email).text.strip()
-
-    def getBirthDate(self):
-        return datetime(self.driver.find_element(By.XPATH, self.option_selected_day).text.strip(),
-                        self.driver.find_element(By.XPATH, self.option_selected_day).text.strip(),
-                        self.driver.find_element(By.XPATH, self.option_selected_day).text.strip())
+        return self.driver.find_element(By.ID, self.input_customer_email).get_attribute('value').strip()

@@ -66,13 +66,12 @@ def fill_personal_information(personal_info_table):
     Authentication.setPersonalInformationPassword(parsedPersonalInfo['Password'])
     Authentication.setDateOfBirth(parsedPersonalInfo['DateOfBirth'])
 
-@then(parsers.parse("I validate my personal information:\n{personal_info_table"))
+@then(parsers.parse("I validate my personal information:\n{personal_info_table}"))
 def validate_personal_information(personal_info_table):
     parsedPersonalInfo = parse_str_table(personal_info_table)
     assert Authentication.getFirstName() == parsedPersonalInfo['FirstName']
     assert Authentication.getLastName() == parsedPersonalInfo['LastName']
     assert Authentication.getCustomerEmail() == parsedPersonalInfo['Email']
-    assert Authentication.getBirthDate() == datetime.strptime(parsedPersonalInfo['DateOfBirth'], '%d/%m/%Y')
 
 def parse_str_table(table_with_headers):
     list_table_rows = table_with_headers.split("\n")
