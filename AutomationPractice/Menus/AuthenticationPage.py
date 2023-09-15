@@ -12,6 +12,11 @@ from selenium.common.exceptions import TimeoutException
 
 
 class AuthenticationPage:
+    page_subheading = "//h1[@class='page-subheading']"
+    text_account_created_success = "Your account has been created."
+    alert_success = "//p[contains(@class,'alert-success')]"
+    my_acc_link_list = "//ul[contains(@class,'myaccount-link-list')]"
+    link_my_personal_information = "//ul[contains(@class,'myaccount-link-list')]//a[@title='Information']"
     heading_create_account = "CREATE AN ACCOUNT"
     heading_my_account = "MY ACCOUNT"
     txt_page_heading_xpath = "//h1[contains(@class,'page-heading')]"
@@ -34,8 +39,14 @@ class AuthenticationPage:
     input_customer_email = "email"
     input_customer_password = "passwd"
     select_day = "days"
+    option_select_day = "//select[@id='days']/option[@value=dayVal]"
+    option_selected_day = "//select[@id='days']//option[@selected='selected']"
     select_month = "months"
+    option_select_month = "//select[@id='months']/option[@value=monthVal]"
+    option_selected_month = "//select[@id='months']//option[@selected='selected']"
     select_year = "years"
+    option_select_year = "//select[@id='years']/option[@value=yearVal]"
+    option_selected_year = "//select[@id='years']//option[@selected='selected']"
     button_register = "submitAccount"
     form_account_create = "account-creation_form"
 
@@ -58,8 +69,6 @@ class AuthenticationPage:
         WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, self.form_account_create)))
 
     def validatePageHeading(self, heading):
-        print("header is ")
-        print(self.driver.find_element(By.XPATH, self.txt_page_heading_xpath).text.strip())
         if self.driver.find_element(By.XPATH, self.txt_page_heading_xpath).text.strip() == heading:
             assert True
         else:
@@ -89,17 +98,37 @@ class AuthenticationPage:
 
     def setDateOfBirth(self, date):
         formattedDate = datetime.strptime(date, '%d/%m/%Y')
-        print(formattedDate.date())
-        print(formattedDate.day)
-        print(formattedDate.month)
-        print(formattedDate.year)
-        dayselect = Select(self.driver.find_element(By.ID(self.select_day)))
-        dayselect.select_by_index(3)
-        time.sleep(5)
-        #Select(self.driver.find_element(By.ID(self.select_month))).select_by_index(formattedDate.month)
-        #Select(self.driver.find_element(By.ID(self.select_year))).select_by_value(str(formattedDate.year))
+        self.driver.find_element(By.ID, self.select_day).click()
+        self.driver.find_element(By.XPATH, self.option_select_day.replace('dayVal', str(formattedDate.day))).click()
+        self.driver.find_element(By.ID, self.select_month).click()
+        self.driver.find_element(By.XPATH, self.option_select_month.replace('monthVal', str(formattedDate.month))).click()
+        self.driver.find_element(By.ID, self.select_year).click()
+        self.driver.find_element(By.XPATH, self.option_select_year.replace('yearVal', str(formattedDate.year))).click()
 
     def clickRegister(self):
         self.driver.find_element(By.ID, self.button_register).click()
-        #WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, self.form_account_create)))
+        WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, self.my_acc_link_list)))
 
+    def validateSuccessBanner(self, text):
+        if self.driver.find_element(By.XPATH, self.alert_success).text.strip() == text:
+            assert True
+        else:
+            assert False
+
+    def clickOnMyPersonalInformation(self):
+        self.driver.find_element(By.XPATH, self.link_my_personal_information).click()
+        WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, self.page_subheading)))
+
+    def getFirstName(self):
+        return self.driver.find_element(By.ID, self.input_customer_first_name).text.strip()
+
+    def getLastName(self):
+        return self.driver.find_element(By.ID, self.input_customer_last_name).text.strip()
+
+    def getCustomerEmail(self):
+        return self.driver.find_element(By.ID, self.input_customer_email).text.strip()
+
+    def getBirthDate(self):
+        return datetime(self.driver.find_element(By.XPATH, self.option_selected_day).text.strip(),
+                        self.driver.find_element(By.XPATH, self.option_selected_day).text.strip(),
+                        self.driver.find_element(By.XPATH, self.option_selected_day).text.strip())

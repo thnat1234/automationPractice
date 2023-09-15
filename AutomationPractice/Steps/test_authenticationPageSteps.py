@@ -6,6 +6,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from AutomationPractice.Menus.AuthenticationPage import AuthenticationPage
+from datetime import datetime
 
 baseURL = "http://www.automationpractice.pl/index.php"
 
@@ -27,18 +28,6 @@ def open_website():
 def navigate_to_login_page():
     Authentication.clickSignUp()
 
-
-@when(parsers.parse('I fill my personal information:\n{personal_info_table}'))
-def fill_personal_information(personal_info_table):
-    parsedPersonalInfo = parse_str_table(personal_info_table)
-    Authentication.setTitle(parsedPersonalInfo['Title'])
-    Authentication.setFirstName(parsedPersonalInfo['FirstName'])
-    Authentication.setLastName(parsedPersonalInfo['LastName'])
-    Authentication.setPersonalInformationPassword(parsedPersonalInfo['Password'])
-    Authentication.setDateOfBirth(parsedPersonalInfo['DateOfBirth'])
-    time.sleep(5)
-
-
 @when(parsers.cfparse("I enter email {email}"))
 def enter_email(email):
     Authentication.setCreateEmail(email)
@@ -50,13 +39,40 @@ def validate_create_account_page():
 @when("I click register")
 def click_register():
     Authentication.clickRegister()
-@then("Then I am redirected to my account screen")
+
+@then("I am redirected to my account screen")
 def validate_my_account_page():
-    Authentication.validatePageHeading(Authentication.heading_create_account)
+    time.sleep(10)
+    Authentication.validatePageHeading(Authentication.heading_my_account)
 
 @when("I click on create account button")
 def click_create_account_button():
     Authentication.clickCreateAccout()
+
+@then("I validate banner with successful registration")
+def validate_banner_successful_registration():
+    Authentication.validateSuccessBanner(Authentication.text_account_created_success)
+
+@when("I click on my personal information")
+def click_on_personal_information():
+    Authentication.clickOnMyPersonalInformation()
+
+@when(parsers.parse('I fill my personal information:\n{personal_info_table}'))
+def fill_personal_information(personal_info_table):
+    parsedPersonalInfo = parse_str_table(personal_info_table)
+    Authentication.setTitle(parsedPersonalInfo['Title'])
+    Authentication.setFirstName(parsedPersonalInfo['FirstName'])
+    Authentication.setLastName(parsedPersonalInfo['LastName'])
+    Authentication.setPersonalInformationPassword(parsedPersonalInfo['Password'])
+    Authentication.setDateOfBirth(parsedPersonalInfo['DateOfBirth'])
+
+@then(parsers.parse("I validate my personal information:\n{personal_info_table"))
+def validate_personal_information(personal_info_table):
+    parsedPersonalInfo = parse_str_table(personal_info_table)
+    assert Authentication.getFirstName() == parsedPersonalInfo['FirstName']
+    assert Authentication.getLastName() == parsedPersonalInfo['LastName']
+    assert Authentication.getCustomerEmail() == parsedPersonalInfo['Email']
+    assert Authentication.getBirthDate() == datetime.strptime(parsedPersonalInfo['DateOfBirth'], '%d/%m/%Y')
 
 def parse_str_table(table_with_headers):
     list_table_rows = table_with_headers.split("\n")
